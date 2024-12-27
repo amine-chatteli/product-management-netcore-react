@@ -1,4 +1,3 @@
-// src/components/ProductList/ProductListItem.js
 import React, { useState } from 'react';
 import productService from '../../services/productService';
 
@@ -6,13 +5,14 @@ const ProductListItem = ({ product, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState(product.name);
     const [editedPrice, setEditedPrice] = useState(product.price);
+    const [editedQuantity, setEditedQuantity] = useState(product.quantity); // Add this line
 
     const handleEdit = async () => {
         setIsEditing(true);
     };
 
     const handleSave = async () => {
-        const editedProduct = { ...product, name: editedName, price: parseFloat(editedPrice) };
+        const editedProduct = { ...product, name: editedName, price: parseFloat(editedPrice), quantity: parseInt(editedQuantity) }; // Update this line
         try {
             await productService.updateProduct(product.id, editedProduct);
             setIsEditing(false);
@@ -27,6 +27,7 @@ const ProductListItem = ({ product, onDelete, onEdit }) => {
         // Reset edited values
         setEditedName(product.name);
         setEditedPrice(product.price);
+        setEditedQuantity(product.quantity); // Add this line
     };
 
     return (
@@ -39,6 +40,9 @@ const ProductListItem = ({ product, onDelete, onEdit }) => {
                     <div className="col">
                         <input type="number" className="form-control" value={editedPrice} onChange={e => setEditedPrice(e.target.value)} required />
                     </div>
+                    <div className="col">
+                        <input type="number" className="form-control" value={editedQuantity} onChange={e => setEditedQuantity(e.target.value)} required /> {/* Add this block */}
+                    </div>
                     <div className="col-auto">
                         <button className="btn btn-success me-2" onClick={handleSave}>Save</button>
                         <button className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
@@ -46,7 +50,7 @@ const ProductListItem = ({ product, onDelete, onEdit }) => {
                 </div>
             ) : (
                 <div className="d-flex justify-content-between align-items-center">
-                    <span>{product.name} - ${product.price}</span>
+                    <span>{product.name} - ${product.price} - Quantity: {product.quantity}</span> {/* Update this line */}
                     <div>
                         <button className="btn btn-danger me-2" onClick={onDelete}>Delete</button>
                         <button className="btn btn-primary" onClick={handleEdit}>Edit</button>
