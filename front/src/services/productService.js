@@ -1,4 +1,3 @@
-// src/services/productService.js
 import axios from 'axios';
 
 const baseURL = 'https://localhost:7202/api/Product';
@@ -18,6 +17,14 @@ const productService = {
     },
     updateProduct: async (id, product) => {
         const response = await axios.put(`${baseURL}/${id}`, product);
+        return response.data;
+    },
+    orderProduct: async (id, quantity) => {
+        const response = await axios.post(`${baseURL}/${id}/order`, quantity);
+        return response.data;
+    },
+    getOrders: async () => {
+        const response = await axios.get(`${baseURL}/orders`);
         return response.data;
     }
 };

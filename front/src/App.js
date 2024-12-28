@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import ProductList from './components/ProductList/ProductList';
 import ProductForm from './components/ProductForm/ProductForm';
+import OrderList from './components/OrderList';
 
 function App() {
     const [refresh, setRefresh] = useState(false);
@@ -14,6 +15,7 @@ function App() {
         <div>
             <ProductList key={refresh} />
             <ProductForm onProductAdded={handleProductAdded} />
+            <OrderList />
         </div>
     );
 }
