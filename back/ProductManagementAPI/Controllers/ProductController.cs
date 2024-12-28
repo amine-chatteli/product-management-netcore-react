@@ -82,7 +82,7 @@ namespace ProductManagementAPI.Controllers
         }
 
         [HttpPost("{id}/order")]
-        public IActionResult OrderProduct(int id, [FromBody] int quantity)
+        public IActionResult OrderProduct(int id, [FromBody] OrderRequest request)
         {
             var product = _productRepository.GetProductById(id);
             if (product == null)
@@ -92,11 +92,11 @@ namespace ProductManagementAPI.Controllers
 
             try
             {
-                product.Order(quantity);
+                product.Order(request.Quantity);
                 var order = new Order
                 {
                     ProductId = product.Id,
-                    Quantity = quantity,
+                    Quantity = request.Quantity,
                     OrderDate = DateTime.UtcNow
                 };
                 _orderRepository.AddOrder(order);
@@ -107,6 +107,11 @@ namespace ProductManagementAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        public class OrderRequest
+        {
+            public int Quantity { get; set; }
         }
 
         [HttpGet("orders")]

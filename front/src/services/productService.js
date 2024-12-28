@@ -20,7 +20,11 @@ const productService = {
         return response.data;
     },
     orderProduct: async (id, quantity) => {
-        const response = await axios.post(`${baseURL}/${id}/order`, quantity);
+        const response = await axios.post(`${baseURL}/${id}/order`, { quantity }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response.data;
     },
     getOrders: async () => {
