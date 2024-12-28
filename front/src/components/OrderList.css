@@ -1,0 +1,9 @@
+.order-list {
+    margin-bottom: 20px; /* Add margin at the bottom of the list */
+}
+
+.order-list-item {
+    height: 60px; /* Increase the height of the list items */
+    display: flex;
+    align-items: center;
+}
