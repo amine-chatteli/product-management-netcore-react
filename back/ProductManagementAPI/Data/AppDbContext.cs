@@ -7,6 +7,8 @@ namespace ProductManagementAPI.Data
     {
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
         protected readonly IConfiguration Configuration;
 
         public AppDbContext(IConfiguration configuration)

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductManagementAPI.Entities;
 using ProductManagementAPI.Repositories;
+using System;
+using System.Linq;
 
 namespace ProductManagementAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace ProductManagementAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepository, IOrderRepository orderRepository)
         {
             _productRepository = productRepository;
+            _orderRepository = orderRepository;
         }
 
         [HttpGet]
@@ -75,6 +79,41 @@ namespace ProductManagementAPI.Controllers
 
             _productRepository.DeleteProduct(id);
             return NoContent();
+        }
+
+        [HttpPost("{id}/order")]
+        public IActionResult OrderProduct(int id, [FromBody] int quantity)
+        {
+            var product = _productRepository.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                product.Order(quantity);
+                var order = new Order
+                {
+                    ProductId = product.Id,
+                    Quantity = quantity,
+                    OrderDate = DateTime.UtcNow
+                };
+                _orderRepository.AddOrder(order);
+                _productRepository.UpdateProduct(product);
+                return Ok(order);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("orders")]
+        public IActionResult GetOrders()
+        {
+            var orders = _orderRepository.GetAllOrders().ToList();
+            return Ok(orders);
         }
     }
 }
